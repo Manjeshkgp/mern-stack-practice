@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import { Link } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 
 export default function Register() {
+  const navigate = useNavigate()
   const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -24,9 +25,12 @@ export default function Register() {
     const res = await fetch("http://localhost:4000/auth/register",{
         method:"POST",
         body: JSON.stringify(form),
+        headers: {
+            "content-type":"application/json",
+        }
     });
     if(res.ok){
-        console.log("Success");
+      navigate("/login")
     }
   };
 
@@ -45,7 +49,7 @@ export default function Register() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign up
+          Register
         </Typography>
         <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
           <Grid container spacing={2}>
@@ -98,12 +102,12 @@ export default function Register() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Sign Up
+            Register
           </Button>
           <Grid container justifyContent="flex-end">
             <Grid item>
               <RouterLink to='/login'>
-                <Link component="span" variant="body2">Already have an account? Sign in</Link>
+                <Link component="span" variant="body2">Already have an account? Login</Link>
               </RouterLink>
             </Grid>
           </Grid>

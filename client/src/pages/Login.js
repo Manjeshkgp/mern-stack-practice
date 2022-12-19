@@ -10,15 +10,37 @@ import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+import Cookies from "js-cookie";
+import { useNavigate } from "react-router-dom";
+
 
 export default function Login() {
-  const handleSubmit = (event) => {
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    const form = {
       email: data.get("email"),
       password: data.get("password"),
-    });
+    }
+
+    const res = await fetch("http://localhost:4000/auth/login",{
+      method:"POST",
+      body:JSON.stringify(form),
+      headers:{
+        "content-type":"application/json",
+      }
+    })
+
+    const {token} = await res.json()
+    
+    if(res.ok){
+      Cookies.set("token",token)
+      navigate("/")
+    }
+
   };
 
   return (
@@ -36,7 +58,7 @@ export default function Login() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Login
         </Typography>
         <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
           <TextField
@@ -65,12 +87,12 @@ export default function Login() {
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
           >
-            Sign In
+            Login
           </Button>
           <Grid container>
             <Grid item>
               <RouterLink to='/register'>
-                <Link component="span" variant="body2">{"Don't have an account? Sign Up"}</Link>
+                <Link component="span" variant="body2">{"Don't have an account? Register"}</Link>
               </RouterLink>
             </Grid>
           </Grid>
