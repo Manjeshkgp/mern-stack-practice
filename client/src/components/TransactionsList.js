@@ -11,8 +11,11 @@ import EditSharpIcon from "@mui/icons-material/EditSharp";
 import DeleteSharpIcon from "@mui/icons-material/DeleteSharp";
 import { IconButton } from "@mui/material";
 import dayjs from "dayjs";
+import Cookies from "js-cookie";
+import { useSelector } from "react-redux";
 
 export default function TransactionsList({ transactions,fetchTransactions,setEditTransaction }) {
+  const token = Cookies.get("token")
 
   const remove = async (_id)=>{
     if(!window.confirm("Are you sure you want to remove")){
@@ -20,6 +23,9 @@ export default function TransactionsList({ transactions,fetchTransactions,setEdi
     }
     const res = await fetch(`${process.env.REACT_APP_API_URL}/transaction/${_id}`,{
       method: "DELETE",
+      headers:{
+        Authorization:`Bearer ${token}`,
+      },
     })
     if(res.ok){
       alert("Deleted Successfully")
@@ -30,7 +36,11 @@ export default function TransactionsList({ transactions,fetchTransactions,setEdi
   const formatDate = (date) =>{
     return dayjs(date).format("DD MMM, YY")
   }
-
+  const user = useSelector(state=>state.auth.user)
+  const categoryName = (id) => {
+    const category = user.categories.find((category)=>category._id===id);
+    return category ? category.label : 'NA'
+  }
   return (
     <>
       <Typography sx={{ marginTop: 10 }} variant="h6">
@@ -43,6 +53,7 @@ export default function TransactionsList({ transactions,fetchTransactions,setEdi
               <TableCell align="center">Amount</TableCell>
               <TableCell align="center">Description</TableCell>
               <TableCell align="center">Date</TableCell>
+              <TableCell align="center">Category</TableCell>
               <TableCell align="center">Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -60,6 +71,9 @@ export default function TransactionsList({ transactions,fetchTransactions,setEdi
                 </TableCell>
                 <TableCell align="center">
                   {formatDate(row.date) || "No Details Given"}
+                </TableCell>
+                <TableCell align="center">
+                  {categoryName(row.category_id)}
                 </TableCell>
                 <TableCell align="center">
                   <IconButton onClick={()=>(setEditTransaction(row))} color="primary" component="label">
