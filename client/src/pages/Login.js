@@ -42,6 +42,7 @@ export default function Login() {
       Cookies.set("token",token)
       dispatch(setUser(user))
       navigate("/")
+      window.location.reload()
     }
 
   };

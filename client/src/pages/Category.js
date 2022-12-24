@@ -14,9 +14,14 @@ import {Container} from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import Cookies from "js-cookie";
 import { setUser } from "../store/auth";
+import CategoryForm from "../components/CategoryForm";
 
 export default function Category() {
     const dispatch = useDispatch();
+    const [editCategory,setEditCategory] = React.useState({});
+    function setEdit(category){
+      setEditCategory(category);
+    }
     const user = useSelector(state=>state.auth.user)
     const token = Cookies.get("token")
     const remove = async (_id)=>{
@@ -34,6 +39,7 @@ export default function Category() {
 
   return (
     <><Container>
+      <CategoryForm editCategory={editCategory}/>
       <Typography sx={{ marginTop: 10 }} variant="h6">
         List of Categories
       </Typography>
@@ -59,7 +65,7 @@ export default function Category() {
                   {row.icon || "No Details Given"}
                 </TableCell>
                 <TableCell align="center">
-                <IconButton color="primary" component="label">
+                <IconButton color="primary" component="label" onClick={()=>setEdit(row)}>
                     <EditSharpIcon />
                   </IconButton>
                   <IconButton onClick={()=>{remove(row._id)}} color="warning" component="label">

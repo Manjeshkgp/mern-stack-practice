@@ -14,33 +14,39 @@ import dayjs from "dayjs";
 import Cookies from "js-cookie";
 import { useSelector } from "react-redux";
 
-export default function TransactionsList({ transactions,fetchTransactions,setEditTransaction }) {
-  const token = Cookies.get("token")
-
-  const remove = async (_id)=>{
-    if(!window.confirm("Are you sure you want to remove")){
+export default function TransactionsList({
+  data,
+  fetchTransactions,
+  setEditTransaction,
+}) {
+  const token = Cookies.get("token");
+  const remove = async (_id) => {
+    if (!window.confirm("Are you sure you want to remove")) {
       return;
     }
-    const res = await fetch(`${process.env.REACT_APP_API_URL}/transaction/${_id}`,{
-      method: "DELETE",
-      headers:{
-        Authorization:`Bearer ${token}`,
-      },
-    })
-    if(res.ok){
-      alert("Deleted Successfully")
+    const res = await fetch(
+      `${process.env.REACT_APP_API_URL}/transaction/${_id}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (res.ok) {
+      alert("Deleted Successfully");
       fetchTransactions();
     }
-  }
+  };
 
-  const formatDate = (date) =>{
-    return dayjs(date).format("DD MMM, YY")
-  }
-  const user = useSelector(state=>state.auth.user)
+  const formatDate = (date) => {
+    return dayjs(date).format("DD MMM, YY");
+  };
+  const user = useSelector((state) => state.auth.user);
   const categoryName = (id) => {
-    const category = user.categories.find((category)=>category._id===id);
-    return category ? category.label : 'NA'
-  }
+    const category = user.categories.find((category) => category._id === id);
+    return category ? category.label : "NA";
+  };
   return (
     <>
       <Typography sx={{ marginTop: 10 }} variant="h6">
@@ -58,33 +64,44 @@ export default function TransactionsList({ transactions,fetchTransactions,setEdi
             </TableRow>
           </TableHead>
           <TableBody>
-            {transactions.map((row) => (
-              <TableRow
-                key={row._id}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row" align="center">
-                  {row.amount}
-                </TableCell>
-                <TableCell align="center">
-                  {row.description || "No Details Given"}
-                </TableCell>
-                <TableCell align="center">
-                  {formatDate(row.date) || "No Details Given"}
-                </TableCell>
-                <TableCell align="center">
-                  {categoryName(row.category_id)}
-                </TableCell>
-                <TableCell align="center">
-                  <IconButton onClick={()=>(setEditTransaction(row))} color="primary" component="label">
-                    <EditSharpIcon />
-                  </IconButton>
-                  <IconButton onClick={()=>(remove(row._id))} color="warning" component="label">
-                    <DeleteSharpIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            {
+            data.map((month) =>
+              month.transactions.map((row) => (
+                <TableRow
+                  key={row._id}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row" align="center">
+                    {row.amount}
+                  </TableCell>
+                  <TableCell align="center">
+                    {row.description || "No Details Given"}
+                  </TableCell>
+                  <TableCell align="center">
+                    {formatDate(row.date) || "No Details Given"}
+                  </TableCell>
+                  <TableCell align="center">
+                    {categoryName(row.category_id)}
+                  </TableCell>
+                  <TableCell align="center">
+                    <IconButton
+                      onClick={() => setEditTransaction(row)}
+                      color="primary"
+                      component="label"
+                    >
+                      <EditSharpIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => remove(row._id)}
+                      color="warning"
+                      component="label"
+                    >
+                      <DeleteSharpIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
           </TableBody>
         </Table>
       </TableContainer>

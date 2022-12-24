@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Container } from "@mui/system";
 import TransactionForm from "../components/TransactionForm";
+import TransactionChart from "../components/TransactionChart";
 import TransactionsList from "../components/TransactionsList";
 import Cookies from "js-cookie";
 
@@ -25,13 +26,14 @@ const Home = () => {
   return (
     <>
       <Container>
+      <TransactionChart data={transactions}/>
         <TransactionForm
           fetchTransactions={fetchTransactions}
           editTransaction={editTransaction}
           setEditTransaction={setEditTransaction}
         ></TransactionForm>
         <TransactionsList
-          transactions={transactions}
+          data={transactions}
           fetchTransactions={fetchTransactions}
           setEditTransaction={setEditTransaction}
         ></TransactionsList>

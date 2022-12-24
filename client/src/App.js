@@ -27,7 +27,6 @@ function App() {
   setIsLoading(false)
 }
 
-  console.log(auth)
 
   useEffect(()=>{
     fetchUser()
